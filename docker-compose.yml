@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  mongodb:
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ADMIN}
+      MONGO_INITDB_ROOT_PASSWORD: ${SECRET_TOKEN}
+    image: mongo
+    ports:
+      - "27016:27017"
+  
+  json-schema-extractor:
+    build: .
+    container_name: json-schema-extractor
+    ports:
+      - "4200:4200"
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      SECRET_TOKEN: ${SECRET_TOKEN}
+
+    depends_on:
+      - mongodb
