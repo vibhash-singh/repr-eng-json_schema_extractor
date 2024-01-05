@@ -1,3 +1,6 @@
+# Copyright 2024, Vibhash Kumar Singh <singh13@ads.uni-passau.de>
+# SPDX-License-Identifier: GPL-2.0-only
+
 REPORT_DIR=report
 
 .PHONY: report
