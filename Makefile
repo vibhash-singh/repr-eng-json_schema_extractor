@@ -1,12 +1,12 @@
-INPUT_DIR=/report/src
-OUTPUT_DIR=/report/build
+REPORT_DIR=report
 
 .PHONY: report
 report:
 	echo "Generating report ..."
-	cd $(INPUT_DIR) && pdflatex -output-directory=$(OUTPUT_DIR) main.tex
+	cd $(REPORT_DIR); pdflatex main.tex; bibtex main.aux; pdflatex main.tex; pdflatex main.tex;
+
 
 .PHONY: clean
 clean:
 	echo "Removing build files ..."
-	rm -rf $(OUTPUT_DIR)/*
+	cd $(REPORT_DIR); rm -rf main.aux main.bbl main.blg main.log main.out main.pdf main.toc 
