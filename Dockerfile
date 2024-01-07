@@ -34,6 +34,12 @@ RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesourc
 RUN apt-get update
 RUN apt-get install nodejs -y
 
+# Download Dataset
+RUN mkdir -p /dataset
+RUN cd /dataset && curl -O https://raw.githubusercontent.com/mmathioudakis/geotopics/master/data/firenze_checkins.json
+RUN cd /dataset && curl -O https://raw.githubusercontent.com/mmathioudakis/geotopics/master/data/firenze_venues.json
+
+# Clone JSONSchemaDiscovery repository
 RUN git clone https://github.com/feekosta/JSONSchemaDiscovery.git
 WORKDIR /JSONSchemaDiscovery
 RUN git checkout tags/1.1.0
@@ -42,20 +48,19 @@ RUN npm install -g @angular/cli
 RUN npm install -g typescript
 RUN npm install
 
+# Apply patch
 COPY npm-dev.patch /JSONSchemaDiscovery
 RUN git apply npm-dev.patch
 
+# smoke.sh
 COPY smoke.sh /
 RUN chmod +x /smoke.sh
 
-COPY report /report
-
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get install -y 
+# Generate report
+RUN git clone https://github.com/vibhash-singh/repr-eng-report.git /report
+COPY Makefile /Makefile
+RUN cd .. && make report 
 
 CMD ["npm", "run", "dev"]
-
-COPY Makefile /Makefile
-RUN cd .. && make report
 
 EXPOSE 4200
