@@ -19,12 +19,15 @@ RUN apt-get install -y \
     g++ \
     make \
     python3 \
+    python3-pip \
     texlive-latex-base \
     texlive-xetex \
     texlive-fonts-recommended \
     texlive-fonts-extra \
     texlive-latex-extra \
     vim
+
+RUN pip install requests pymongo
 
 # Install Node16.x
 RUN apt-get install -y ca-certificates gnupg
@@ -36,8 +39,7 @@ RUN apt-get install nodejs -y
 
 # Download Dataset
 RUN mkdir -p /dataset
-RUN cd /dataset && curl -O https://raw.githubusercontent.com/mmathioudakis/geotopics/master/data/firenze_checkins.json
-RUN cd /dataset && curl -O https://raw.githubusercontent.com/mmathioudakis/geotopics/master/data/firenze_venues.json
+RUN cd /dataset && git clone https://github.com/feekosta/datasets.git
 
 # Clone JSONSchemaDiscovery repository
 RUN git clone https://github.com/feekosta/JSONSchemaDiscovery.git
@@ -53,8 +55,14 @@ COPY npm-dev.patch /JSONSchemaDiscovery
 RUN git apply npm-dev.patch
 
 # smoke.sh
-COPY smoke.sh /
-RUN chmod +x /smoke.sh
+COPY doAll.sh /
+RUN chmod +x /doAll.sh
+
+# Copy ground truth
+COPY ground_truth /ground_truth
+
+# Copu scripts
+COPY scripts /scripts
 
 # Generate report
 RUN git clone https://github.com/vibhash-singh/repr-eng-report.git /report
