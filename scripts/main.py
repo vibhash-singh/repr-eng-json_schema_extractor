@@ -64,11 +64,11 @@ def get_db_connection():
 
 
 def perform_experiments(db_conn):
-    # cleanup(db_conn)
-    # register_user()
-    # token = get_token()
+    cleanup(db_conn)
+    register_user()
+    token = get_token()
 
-    # perform_experiment1(db_conn, token)
+    perform_experiment1(db_conn, token)
 
     cleanup(db_conn)
     register_user()

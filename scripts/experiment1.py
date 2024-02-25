@@ -12,16 +12,19 @@ from constants import ADDRESS, PORT, DATABASENAME, AUTH_DATABASE, AUTH_MECHANISM
 latex_template_begin = """
 \\begin{table}[h]
 \centering
-\caption{RESULTS FOR FOURSQUARE DATASETS \cite{frozza2018approach}} 
+\caption{Experiment 2 Reults} 
 \scalebox{0.85} {
 \\begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
-\\textbf{Collection} & \\textbf{N\_JSON} & \\textbf{RS} & \\textbf{ROrd}  \\\ \hline 
+\multicolumn{2}{|c|}{\\textbf{Datasets}} & \multicolumn{2}{c|}{\\textbf{Experiment Results}} &
+\multicolumn{2}{c|}{\\textbf{Frozza et al. \cite{frozza2018approach}}} \\\ \hline
+\\textbf{Collection} & \\textbf{N\_JSON} & \\textbf{RS} & \\textbf{ROrd} & \\textbf{RS} & \\textbf{ROrd} \\\ \hline 
 """
 
 latex_template_end = """
 \end{tabular}
 }
+\label{tab:exp2_result}
 \end{table}
 """
 
@@ -111,11 +114,12 @@ def experiment_1(collections, token):
    
 def verify_results_exp1(results):
     print("Verifying results for experiment 1")
-    
-    with open("ground_truth/exp1.csv", mode='r', encoding='utf-8') as file:
+    csv_results = {}
+
+    with open("/ground_truth/exp1.csv", mode='r', encoding='utf-8') as file:
         csv_reader = csv.reader(file)
         next(csv_reader) # Skip the header
-    
+
         for row in csv_reader:
             print(f"Verifying result for collection {row[0]}")
             curr_result = [result for result in results if result["collectionName"] == row[0]][0]
@@ -123,28 +127,35 @@ def verify_results_exp1(results):
                 curr_result["uniqueUnorderedCount"] == int(row[2]) and \
                 curr_result["uniqueOrderedCount"] == int(row[3]):
                 print(f"Result for collection {row[0]} matches with ground truth")
+                csv_results[row[0]] = row
                 continue
             else:
                 print(f"Result for collection {row[0]} dont match with ground truth")
                 
+    return csv_results
 
-def generate_results_exp1(results):
+def generate_results_exp1(results, csv_results):
     print("Generating table for experiment 1")
 
     data = ""
     for result in results:
         data += f"{result['collectionName']}&{result['collectionCount']}&{result['uniqueUnorderedCount']} \
-            &{result['uniqueOrderedCount']}\\\\ \hline \n"
+            &{result['uniqueOrderedCount']} & {csv_results[result['collectionName']][2] } & {csv_results[result['collectionName']][3]} \
+              \\\\ \hline \n"
             
     latex_table = latex_template_begin + data + latex_template_end
 
-    with open("report/exp1.tex", "w", encoding="utf-8") as file:
+    with open("/report/exp_1.tex", "w", encoding="utf-8") as file:
         file.write(latex_table)
         
+
 def perform_experiment1(db_conn, token):
+    print("==================================================================================")
     print("Performing experiment 1")
-    collections = add_data(db_conn, DATA_FOLDER)
-    #collections = ["movies", "drugs", "companies"]
+    add_data(db_conn, DATA_FOLDER)
+    collections = ["movies", "drugs", "companies"]
     results = experiment_1(collections, token)
-    verify_results_exp1(results)
-    generate_results_exp1(results)
+    csv_results = verify_results_exp1(results)
+    generate_results_exp1(results, csv_results)
+    print("Experiment 1 completed")
+    print("==================================================================================")

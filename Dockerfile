@@ -1,6 +1,3 @@
-# Copyright 2024, Vibhash Kumar Singh <singh13@ads.uni-passau.de>
-# SPDX-License-Identifier: GPL-2.0-only
-
 FROM ubuntu:22.04
 
 LABEL maintainer="Vibhash Singh <singh13@ads.uni-passau.de>"
@@ -38,8 +35,7 @@ RUN apt-get update
 RUN apt-get install nodejs -y
 
 # Download Dataset
-RUN mkdir -p /dataset
-RUN cd /dataset && git clone https://github.com/feekosta/datasets.git
+RUN git clone https://github.com/feekosta/datasets.git /dataset
 
 # Clone JSONSchemaDiscovery repository
 RUN git clone https://github.com/feekosta/JSONSchemaDiscovery.git
@@ -61,13 +57,12 @@ RUN chmod +x /doAll.sh
 # Copy ground truth
 COPY ground_truth /ground_truth
 
-# Copu scripts
+# Copy scripts
 COPY scripts /scripts
 
-# Generate report
+# Copy report repository
 RUN git clone https://github.com/vibhash-singh/repr-eng-report.git /report
-COPY Makefile /Makefile
-RUN cd .. && make report 
+COPY Makefile /Makefile 
 
 CMD ["npm", "run", "dev"]
 

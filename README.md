@@ -18,12 +18,11 @@ Use the following command to access the container by replacing `<container_ID>` 
 
 `docker exec -it <container_ID> bash`
 
-## Running smoke.sh
-`smoke.sh` is preset in the root of the container and can be run from both inside or outside the container. To run it from outside the container use the following command
-`docker exec -it <container_ID> sh /smoke.sh`
+## Running doAll.sh
+`doAll.sh` is preset in the root of the container and can be run from both inside or outside the container. To run it from outside the container use the following command
+`docker exec -it <container_ID> sh /doAll.sh`
 
-## Generating report
-The `Makefile` can be used to generate the report. The `Makefile` is present in the root of the container. Run `make report` from the root to build the report. This will generate `report.pdf` inside the `report` folder which is also present in the root. Use `make clean` to clean all the report build files. 
+`doAll.sh` will run all the experiments and also generate the report based on the experiments.The script will generate `report.pdf` inside the `report` folder which is also present in the root. 
 
 To copy the report.pdf from the container to the current directory in the host, use the following command:
 
