@@ -24,6 +24,6 @@ Use the following command to access the container by replacing `<container_ID>` 
 
 `doAll.sh` will run all the experiments and also generate the report based on the experiments.The script will generate `report.pdf` inside the `report` folder which is also present in the root. 
 
-To copy the report.pdf from the container to the current directory in the host, use the following command:
+To copy the `report.pdf` from the container to the current directory in the host, use the following command:
 
-`docker cp <container_ID>:/report/main.pdf .`
+`docker cp <container_ID>:/report/report.pdf .`
